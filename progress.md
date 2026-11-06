@@ -164,8 +164,14 @@ Statuses: Not Started / In Progress / Implemented / Tested / Verified / Blocked 
 
 ## Next Actions
 
-1. (done) Model gateway, ledger v0, budgets.
-2. (done) —
-3. Sandbox (`unshare`-based), shell execution, policy engine, tool framework.
-4. Agent loop, task persistence/recovery, JSON-RPC server (stdio + WebSocket), CLI `helix -p`.
-5. Three fixture repos with seeded failing tests and the M0 exit test suite.
+Session 3 (2026-11-06) — repo now github.com/daggerm29-oss/7, working branch `helix/m0-runtime`. Live key is provided as env var **`GEMINI_API`** (vault alias added).
+
+Planned files (check each exists before redoing):
+- [ ] `packages/engine/src/sandbox/sandbox.ts` — LocalSandbox (unshare user+net namespace, scrubbed env, timeout, output cap, path confinement)
+- [ ] `packages/engine/src/policy/policy.ts` — action classes, allow/ask/deny, headless ask→deny, dangerous-command denylist
+- [ ] `packages/engine/src/tools/{registry,builtin}.ts` — read_file, write_file, edit_file, list_dir, search, run_shell
+- [ ] `packages/engine/src/agent/runtime.ts` — agent loop, verify gate + retry, per-step persistence, resume of interrupted tasks
+- [ ] `packages/engine/src/{engine,server,main,index}.ts` — wiring, JSON-RPC handlers, stdio + WebSocket
+- [ ] `apps/cli/{bin/helix,src/main.ts}` — `helix -p`
+- [ ] `fixtures/m0/{js-calc,py-strings,ts-inventory}` — seeded failing tests
+- [ ] tests: `packages/engine/test/{sandbox,agent}.test.ts`, `apps/cli/test/cli.test.ts`, live Gemini exit test

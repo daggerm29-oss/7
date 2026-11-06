@@ -29,7 +29,7 @@ interface ProviderEnv {
 }
 
 const PROVIDER_ENV: Record<string, ProviderEnv> = {
-  gemini: { keys: ['GEMINI_API_KEY', 'GOOGLE_API_KEY'], baseUrl: 'HELIX_GEMINI_BASE_URL' },
+  gemini: { keys: ['GEMINI_API_KEY', 'GOOGLE_API_KEY', 'GEMINI_API'], baseUrl: 'HELIX_GEMINI_BASE_URL' },
   openai: { keys: ['OPENAI_API_KEY'], baseUrl: 'HELIX_OPENAI_BASE_URL' },
 };
 
