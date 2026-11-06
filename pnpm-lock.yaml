@@ -13,7 +13,7 @@ importers:
         version: 1.5.0(@date-fns/tz@1.4.1)(@types/react@19.2.14)(date-fns@4.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@vercel/analytics':
         specifier: 1.6.1
-        version: 1.6.1(next@16.4.3(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+        version: 1.6.1(next@16.4.3(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -25,16 +25,16 @@ importers:
         version: 1.17.0(react@19.2.4)
       next:
         specifier: 16.4.3
-        version: 16.4.3(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.3(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
-        specifier: 19.2.4
+        specifier: ^19
         version: 19.2.4
       react-dom:
-        specifier: 19.2.4
+        specifier: ^19
         version: 19.2.4(react@19.2.4)
       shadcn:
         specifier: ^4.11.0
-        version: 4.19.0(typescript@5.7.3)
+        version: 4.19.0(typescript@5.9.3)
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.4.0
@@ -46,13 +46,13 @@ importers:
         specifier: ^4.3.3
         version: 4.3.3
       '@types/node':
-        specifier: ^24
+        specifier: ^24.10.4
         version: 24.10.4
       '@types/react':
-        specifier: 19.2.14
+        specifier: ^19
         version: 19.2.14
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: ^19
         version: 19.2.3(@types/react@19.2.14)
       postcss:
         specifier: ^8.5
@@ -61,8 +61,65 @@ importers:
         specifier: ^4.3.3
         version: 4.3.3
       typescript:
-        specifier: 5.7.3
-        version: 5.7.3
+        specifier: 5.9.3
+        version: 5.9.3
+
+  apps/cli:
+    dependencies:
+      '@helix/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
+      '@helix/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
+
+  packages/engine:
+    dependencies:
+      '@helix/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+      '@helix/provider-gemini':
+        specifier: workspace:*
+        version: link:../providers/gemini
+      '@helix/provider-openai':
+        specifier: workspace:*
+        version: link:../providers/openai
+      ws:
+        specifier: ^8.22.1
+        version: 8.22.1
+    devDependencies:
+      '@helix/provider-conformance':
+        specifier: workspace:*
+        version: link:../providers/conformance
+      '@types/ws':
+        specifier: ^8.18.2
+        version: 8.18.2
+
+  packages/protocol: {}
+
+  packages/providers/conformance:
+    dependencies:
+      '@helix/protocol':
+        specifier: workspace:*
+        version: link:../../protocol
+      '@helix/provider-gemini':
+        specifier: workspace:*
+        version: link:../gemini
+      '@helix/provider-openai':
+        specifier: workspace:*
+        version: link:../openai
+
+  packages/providers/gemini:
+    dependencies:
+      '@helix/protocol':
+        specifier: workspace:*
+        version: link:../../protocol
+
+  packages/providers/openai:
+    dependencies:
+      '@helix/protocol':
+        specifier: workspace:*
+        version: link:../../protocol
 
 packages:
 
@@ -534,6 +591,10 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@opentelemetry/api@1.10.0':
+    resolution: {integrity: sha512-lMkyes8iHrG+mk6WH7X70MdCLI2RS0FwNBY1PyQ8UemaijE2m5mv5A0Niy3HtbYTFrgkUEQjFMXmSAk2hQDuPQ==}
+    engines: {node: '>=8.0.0'}
+
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
@@ -652,6 +713,9 @@ packages:
 
   '@types/validate-npm-package-name@4.0.2':
     resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
+
+  '@types/ws@8.18.2':
+    resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
   '@vercel/analytics@1.6.1':
     resolution: {integrity: sha512-oH9He/bEM+6oKlv3chWuOOcp8Y6fo6/PSro8hEkgCW3pu9/OiCXiUpRUogDh3Fs3LH2sosDrx8CxeOLBEE+afg==}
@@ -1770,8 +1834,8 @@ packages:
     resolution: {integrity: sha512-faYHw0anBbc/kWF3zFTEnxSFOAGUX9GFbOBthvDdLsIlEoWOFOtS0zgCiQYwIskL9iGXZL3kAXD8OoZ4GmMATA==}
     engines: {node: '>= 18'}
 
-  typescript@5.7.3:
-    resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -1828,6 +1892,18 @@ packages:
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  ws@8.22.1:
+    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
 
   wsl-utils@0.3.1:
     resolution: {integrity: sha512-g/eziiSUNBSsdDJtCLB8bdYEUMj4jR7AGeUo96p/3dTafgjHhpF4RiCFPiRILwjQoDXx5MqkBr4fwWtR3Ky4Wg==}
@@ -2310,6 +2386,9 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
+  '@opentelemetry/api@1.10.0':
+    optional: true
+
   '@sec-ant/readable-stream@0.4.1': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
@@ -2407,9 +2486,13 @@ snapshots:
 
   '@types/validate-npm-package-name@4.0.2': {}
 
-  '@vercel/analytics@1.6.1(next@16.4.3(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)':
+  '@types/ws@8.18.2':
+    dependencies:
+      '@types/node': 24.10.4
+
+  '@vercel/analytics@1.6.1(next@16.4.3(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)':
     optionalDependencies:
-      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.4.3(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
 
   accepts@2.0.0:
@@ -2537,14 +2620,14 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig@9.0.1(typescript@5.7.3):
+  cosmiconfig@9.0.1(typescript@5.9.3):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
       js-yaml: 4.3.2
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.7.3
+      typescript: 5.9.3
 
   cross-spawn@7.0.6:
     dependencies:
@@ -3016,7 +3099,7 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  next@16.4.3(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  next@16.4.3(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@next/env': 16.4.3
       '@swc/helpers': 0.5.23
@@ -3035,6 +3118,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.4.3
       '@next/swc-win32-arm64-msvc': 16.4.3
       '@next/swc-win32-x64-msvc': 16.4.3
+      '@opentelemetry/api': 1.10.0
       sharp: 0.35.5(@types/node@24.10.4)
     transitivePeerDependencies:
       - '@babel/core'
@@ -3254,7 +3338,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shadcn@4.19.0(typescript@5.7.3):
+  shadcn@4.19.0(typescript@5.9.3):
     dependencies:
       '@babel/core': 7.29.7
       '@babel/parser': 7.29.7
@@ -3265,7 +3349,7 @@ snapshots:
       '@types/validate-npm-package-name': 4.0.2
       browserslist: 4.29.5
       commander: 14.0.3
-      cosmiconfig: 9.0.1(typescript@5.7.3)
+      cosmiconfig: 9.0.1(typescript@5.9.3)
       dedent: 1.7.2
       deepmerge: 4.3.1
       diff: 8.0.4
@@ -3452,7 +3536,7 @@ snapshots:
       media-typer: 1.1.0
       mime-types: 3.0.2
 
-  typescript@5.7.3: {}
+  typescript@5.9.3: {}
 
   undici-types@7.16.0: {}
 
@@ -3489,6 +3573,8 @@ snapshots:
       isexe: 3.1.5
 
   wrappy@1.0.2: {}
+
+  ws@8.22.1: {}
 
   wsl-utils@0.3.1:
     dependencies:
