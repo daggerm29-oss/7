@@ -177,7 +177,12 @@ export function geminiHttpError(status: number, bodyText: string, retryAfterHead
     if (Number.isFinite(seconds)) retryAfterMs = seconds * 1000;
   }
   const text = `gemini ${status}${rpcStatus ? ` ${rpcStatus}` : ''}: ${message}`;
-  if (status === 429 || rpcStatus === 'RESOURCE_EXHAUSTED') return new ProviderError(PROVIDER, 'rate_limit', text, { status, retryAfterMs });
+  if (status === 429 || rpcStatus === 'RESOURCE_EXHAUSTED') {
+    // A daily/plan quota (e.g. free tier "requests per day", retry in hours) is not worth retrying in-task.
+    // Per-minute limits stay retryable (rate_limit).
+    const quota = /per day|PerDay/i.test(bodyText) || (retryAfterMs !== undefined && retryAfterMs > 10 * 60_000);
+    return new ProviderError(PROVIDER, quota ? 'plan_limit' : 'rate_limit', text, { status, retryAfterMs });
+  }
   // Gemini reports a bad key as 400 INVALID_ARGUMENT with reason API_KEY_INVALID.
   const keyInvalid = /API_KEY_INVALID|API key not valid|API key expired/i.test(bodyText);
   if (keyInvalid || status === 401 || status === 403 || rpcStatus === 'UNAUTHENTICATED' || rpcStatus === 'PERMISSION_DENIED') return new ProviderError(PROVIDER, 'auth', text, { status });

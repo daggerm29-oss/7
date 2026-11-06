@@ -130,3 +130,14 @@ test('vault never exposes keys: host denylist covers Codex credentials and keys 
   assert.ok(!globalRedactor.redact('key=test-openai-secret-value-xyz').includes('secret-value'));
   assert.ok(Vault.secretEnvNames().includes('GEMINI_API_KEY'));
 });
+
+test('gemini 429s: per-minute limits stay retryable, daily quotas become non-retryable plan_limit', async () => {
+  const { geminiHttpError } = await import('@helix/provider-gemini');
+  const body = (desc: string, delay: string) => JSON.stringify({ error: { code: 429, status: 'RESOURCE_EXHAUSTED', message: `You exceeded your current quota. ${desc}`, details: [{ '@type': 'type.googleapis.com/google.rpc.RetryInfo', retryDelay: delay }] } });
+  const minute = geminiHttpError(429, body('Generate content requests per minute limit exceeded on Free Tier.', '39s'));
+  assert.equal(minute.kind, 'rate_limit');
+  assert.ok(minute.retryable);
+  const day = geminiHttpError(429, body('Generate content requests per day limit exceeded on Free Tier.', '62749s'));
+  assert.equal(day.kind, 'plan_limit');
+  assert.ok(!day.retryable);
+});

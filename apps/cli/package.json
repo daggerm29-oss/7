@@ -13,5 +13,8 @@
   "dependencies": {
     "@helix/engine": "workspace:*",
     "@helix/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@helix/provider-conformance": "workspace:*"
   }
 }

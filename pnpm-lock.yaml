@@ -72,6 +72,10 @@ importers:
       '@helix/protocol':
         specifier: workspace:*
         version: link:../../packages/protocol
+    devDependencies:
+      '@helix/provider-conformance':
+        specifier: workspace:*
+        version: link:../../packages/providers/conformance
 
   packages/engine:
     dependencies:
