@@ -14,7 +14,9 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { Engine } from '../packages/engine/src/engine.ts';
 
-const { values } = parseArgs({ options: { provider: { type: 'string', default: 'gemini' }, model: { type: 'string' } } });
+// --models a,b,c assigns one model per fixture (useful on free tiers with per-model daily quotas).
+const { values } = parseArgs({ options: { provider: { type: 'string', default: 'gemini' }, model: { type: 'string' }, models: { type: 'string' }, fixtures: { type: 'string' } } });
+const perFixture = values.models?.split(',').map((m) => m.trim()).filter(Boolean) ?? [];
 const FIXTURES = fileURLToPath(new URL('../fixtures/m0/', import.meta.url));
 const SPECS = [
   { name: 'js-calc', verify: 'node --test "test/*.test.js"' },
@@ -28,11 +30,12 @@ if (!engine.vault.isConfigured(values.provider!)) {
   process.exit(2);
 }
 const results = [];
-for (const spec of SPECS) {
+const only = values.fixtures?.split(',');
+for (const spec of SPECS.filter((s) => !only || only.includes(s.name))) {
   const dir = mkdtempSync(join(tmpdir(), `helix-live-${spec.name}-`));
   cpSync(join(FIXTURES, spec.name), dir, { recursive: true });
   const started = Date.now();
-  const task = engine.runtime.create({ workspacePath: dir, goal: 'The test suite in this repository is failing. Find the bug in the source code and fix it.', provider: values.provider, model: values.model, verifyCommand: spec.verify, maxSteps: 25, budgetUsd: 1 });
+  const task = engine.runtime.create({ workspacePath: dir, goal: 'The test suite in this repository is failing. Find the bug in the source code and fix it.', provider: values.provider, model: perFixture[SPECS.indexOf(spec)] ?? values.model, verifyCommand: spec.verify, maxSteps: 25, budgetUsd: 1 });
   const done = await engine.runtime.wait(task.id, 600_000);
   const rows = engine.db.all<{ provider_usage_json: string | null; input_tokens: number; output_tokens: number }>(`SELECT provider_usage_json, input_tokens, output_tokens FROM ledger_entries WHERE task = ? AND status = 'ok'`, task.id);
   let rawIn = 0;
@@ -56,6 +59,6 @@ for (const spec of SPECS) {
 await engine.close();
 const pass = results.every((r) => r.status === 'done' && r.reconciled);
 mkdirSync(fileURLToPath(new URL('./results/', import.meta.url)), { recursive: true });
-writeFileSync(fileURLToPath(new URL(`./results/m0-exit-${values.provider}-${new Date().toISOString().slice(0, 10)}.json`, import.meta.url)), JSON.stringify({ at: new Date().toISOString(), pass, results }, null, 2));
+writeFileSync(fileURLToPath(new URL(`./results/m0-exit-${values.provider}-${new Date().toISOString().slice(0, 10)}${only ? `-${only.join('+')}` : ''}.json`, import.meta.url)), JSON.stringify({ at: new Date().toISOString(), pass, results }, null, 2));
 console.log(pass ? 'M0 LIVE EXIT: PASS' : 'M0 LIVE EXIT: FAIL');
 process.exit(pass ? 0 : 1);
