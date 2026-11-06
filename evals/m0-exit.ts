@@ -59,6 +59,6 @@ for (const spec of SPECS.filter((s) => !only || only.includes(s.name))) {
 await engine.close();
 const pass = results.every((r) => r.status === 'done' && r.reconciled);
 mkdirSync(fileURLToPath(new URL('./results/', import.meta.url)), { recursive: true });
-writeFileSync(fileURLToPath(new URL(`./results/m0-exit-${values.provider}-${new Date().toISOString().slice(0, 10)}${only ? `-${only.join('+')}` : ''}.json`, import.meta.url)), JSON.stringify({ at: new Date().toISOString(), pass, results }, null, 2));
+writeFileSync(fileURLToPath(new URL(`./results/m0-exit-${values.provider}-${values.models ? 'multi' : values.model ?? 'default'}-${new Date().toISOString().replace(/[:.]/g, '-')}${only ? `-${only.join('+')}` : ''}.json`, import.meta.url)), JSON.stringify({ at: new Date().toISOString(), pass, results }, null, 2));
 console.log(pass ? 'M0 LIVE EXIT: PASS' : 'M0 LIVE EXIT: FAIL');
 process.exit(pass ? 0 : 1);
